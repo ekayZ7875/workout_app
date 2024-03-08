@@ -12,7 +12,7 @@ const registerUser = (async(req,res)=>{
     try{
         const{username,password} = req.body
     const hashedPassword = await bcrypt.hash(password,16)
-    const insertion = await db('Users').insert({
+    const insertion = await db('Users_2').insert({
         username,
         password:hashedPassword
     })  
@@ -31,7 +31,7 @@ const loginUser = (async(req,res)=>{
         if(!username||!password){
             res.json({message:'username or password is invalid'})
         }
-        const user = await db('Users').where({username}).first()
+        const user = await db('Users_2').where({username}).first()
         if(!user){
             res.json({message:'User not found'})
         }
@@ -52,7 +52,7 @@ if(user && passwordMatch){
 const profile = (async(req,res)=>{
     try{
         const id = req.params.id
-        const user = await db('Users').where('id',id).first()
+        const user = await db('Users_2').where('id',id).first()
         console.log(user)
         res.json(user)
     } catch(error){

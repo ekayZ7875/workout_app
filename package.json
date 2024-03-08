@@ -7,17 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "migrations": "npx knex migrate:latest --knexfile db/knexfile.js",
-    "for_init": "npx knex migrate:make init --migrations-directory src/db/migrations"
+    "for_init": "npx knex migrate:make init --migrations-directory db/migrations"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
+    "nodemailer": "^6.9.11",
     "pg": "^8.11.3"
   }
 }
