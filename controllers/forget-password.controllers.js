@@ -2,18 +2,19 @@ const express = require('express')
 const crypto = require('crypto')
 const db = require('../db/db.js')
 const nodemailer = require('nodemailer')
+const bcrypt = require('bcrypt')
 
 
 const forgetPassword = (async(req,res)=>{
     const { username } = req.body
-    const user = await db('forget-password_1').where({username}).first()
+    const user = await db('Users_2').where({username}).first()
     if(!user){
         return res.json({message:'User Not Found'})
     }
 
     // Generating a unique token
 
-    const token = crypto.randomBytes(20).toString('hex')
+    const token = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = new Date(Date.now()+3600000)
 
     await db('forget-password_1').insert({
@@ -21,7 +22,7 @@ const forgetPassword = (async(req,res)=>{
         token,
         expires_at:expiresAt
     })
-
+    
     async function sendMail(){
         const transporter  =nodemailer.createTransport({
             service: 'gmail',
@@ -48,6 +49,7 @@ const forgetPassword = (async(req,res)=>{
 
 const resetPassword = (async(req,res)=>{
     const { username,token,newpassword } = req.body
+    const hashedNewPassword = await bcrypt.hash(newpassword,16)
 
     const resetRecord = await db('forget-password_1')
     .where({ username,token })
@@ -57,10 +59,9 @@ const resetPassword = (async(req,res)=>{
     if(!resetRecord){
         return res.json({message:'Invalid Or Expired Token'})
     }
-
-    await db('forget-password_1')
+    await db('Users_2')
     .where({ username })
-    .update({ password: newpassword })
+    .update({ password: hashedNewPassword })
 
     await db('forget-password_1')
     .where({username,token})
@@ -73,6 +74,4 @@ const resetPassword = (async(req,res)=>{
 module.exports = {
     forgetPassword,
     resetPassword
-
-
 }
